@@ -1,5 +1,7 @@
 const w = 500, h = 500
 const nodes = 5
+const Canvas = require('canvas').Canvas
+const GifEncoder = require('gifencoder')
 class State {
     constructor() {
         this.scale = 0
@@ -137,5 +139,36 @@ class Renderer {
                 endcb()
             })
         }
+    }
+}
+
+class LinkedPercentileStepGif {
+    constructor(fn) {
+        this.renderer = new Renderer()
+        this.gifEncoder = new GifEncoder()
+        this.canvas = new Canvas(w, h)
+        this.context = this.canvas.getContext('2d')
+        this.initEncoder(fn)
+    }
+
+    initEncoder(fn) {
+        this.encoder.createReadStream().pipe(require('fs').createWriteStream(fn))
+        this.encoder.setQuality(100)
+        this.encoder.setRepeat(0)
+        this.encoder.setDelay(50)
+    }
+
+    create() {
+        this.encoder.start()
+        this.renderer.render(context, () => {
+            this.encoder.addFrame(context)
+        }, () => {
+            this.encoder.end()
+        })
+    }
+
+    static init(fn) {
+        const gif = new LinkedPercentileStepGif(fn)
+        gif.create()
     }
 }
