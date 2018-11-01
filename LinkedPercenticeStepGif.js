@@ -69,6 +69,9 @@ class PSNode {
             context.restore()
         }
         context.restore()
+        if (this.next) {
+            this.next.draw(context)
+        }
     }
 
     update(cb) {
@@ -77,5 +80,17 @@ class PSNode {
 
     startUpdating() {
         this.state.startUpdating()
+    }
+
+    getNext(dir, cb) {
+        var curr = this.prev
+        if (dir == 1) {
+            curr = this.next
+        }
+        if (curr) {
+            return curr
+        }
+        cb()
+        return this
     }
 }
