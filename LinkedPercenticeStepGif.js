@@ -172,3 +172,5 @@ class LinkedPercentileStepGif {
         gif.create()
     }
 }
+
+module.exports = LinkedPercentileStepGif.init
