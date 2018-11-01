@@ -43,7 +43,10 @@ class PSNode {
     draw(context) {
         const gap = w / (nodes + 1)
         const size = gap / 3
-        const r = size / 3
+        const r = size / 5
+        context.lineWidth = Math.min(w, h) / 60
+        context.lineCap = 'round'
+        context.strokeStyle = '#9C27B0'
         context.save()
         context.translate(gap * this.i + gap, h/2)
         context.save()
@@ -55,12 +58,14 @@ class PSNode {
         context.restore()
         for (var j = 0; j < 2; j++) {
             const sc = Math.min(0.5, Math.max(this.state.scale - 0.5 * j, 0)) * 2
+            if (sc > 0 && sc < 1) {
+                console.log(`${this.i} is ${sc}`)
+            }
             context.save()
-            context.rotate(Math.PI * j)
-            context.translate(size/4, size/4)
+            context.translate(size/4 * (1 - 2 * j), size/4 * (1 - 2 * j))
+            context.beginPath()
             for(var k = 0; k <= 360 * sc; k++) {
                 const x = r * Math.cos(k * Math.PI/180), y = r * Math.sin(k * Math.PI/180)
-                context.beginPath()
                 if (k == 0) {
                     context.moveTo(x, y)
                 } else {
@@ -125,18 +130,19 @@ class LinkedPerecentileStep {
 
 class Renderer {
     constructor() {
-        this.running = false
+        this.running = true
         this.lps = new LinkedPerecentileStep()
     }
 
     render(context, cb, endcb) {
-        if (this.running) {
+        while (this.running) {
             context.fillStyle = '#bdbdbd'
             context.fillRect(0, 0, w, h)
             this.lps.draw(context)
             cb(context)
             this.lps.update(() => {
                 endcb()
+                this.running = false
             })
         }
     }
@@ -145,7 +151,7 @@ class Renderer {
 class LinkedPercentileStepGif {
     constructor(fn) {
         this.renderer = new Renderer()
-        this.gifEncoder = new GifEncoder()
+        this.encoder = new GifEncoder(w, h)
         this.canvas = new Canvas(w, h)
         this.context = this.canvas.getContext('2d')
         this.initEncoder(fn)
@@ -160,7 +166,7 @@ class LinkedPercentileStepGif {
 
     create() {
         this.encoder.start()
-        this.renderer.render(context, () => {
+        this.renderer.render(this.context, (context) => {
             this.encoder.addFrame(context)
         }, () => {
             this.encoder.end()
