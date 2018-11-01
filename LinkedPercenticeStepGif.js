@@ -44,7 +44,7 @@ class PSNode {
         const gap = w / (nodes + 1)
         const size = gap / 3
         const r = size / 5
-        context.lineWidth = Math.min(w, h) / 60
+        context.lineWidth = Math.min(w, h) / 100
         context.lineCap = 'round'
         context.strokeStyle = '#9C27B0'
         context.save()
@@ -62,7 +62,7 @@ class PSNode {
                 console.log(`${this.i} is ${sc}`)
             }
             context.save()
-            context.translate(size/4 * (1 - 2 * j), size/4 * (1 - 2 * j))
+            context.translate(size/3 * (1 - 2 * j), size/3 * (1 - 2 * j))
             context.beginPath()
             for(var k = 0; k <= 360 * sc; k++) {
                 const x = r * Math.cos(k * Math.PI/180), y = r * Math.sin(k * Math.PI/180)
