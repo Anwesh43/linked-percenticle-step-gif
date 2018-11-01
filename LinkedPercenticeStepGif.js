@@ -94,3 +94,29 @@ class PSNode {
         return this
     }
 }
+
+class LinkedPerecentileStep {
+    constructor() {
+        this.root = new PSNode(0)
+        this.curr = this.root
+        this.dir = 1
+        this.curr.startUpdating()
+    }
+
+    draw(context) {
+        this.root.draw(context)
+    }
+
+    update(cb) {
+        this.curr.update(() => {
+            this.curr = this.curr.getNext(this.dir, () => {
+                this.dir *= -1
+            })
+            if (this.dir == 1 && this.curr.i == 0) {
+                cb()
+            } else {
+                this.curr.startUpdating()
+            }
+        })
+    }
+}
