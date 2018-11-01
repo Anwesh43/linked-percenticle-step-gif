@@ -120,3 +120,22 @@ class LinkedPerecentileStep {
         })
     }
 }
+
+class Renderer {
+    constructor() {
+        this.running = false
+        this.lps = new LinkedPerecentileStep()
+    }
+
+    render(context, cb, endcb) {
+        if (this.running) {
+            context.fillStyle = '#bdbdbd'
+            context.fillRect(0, 0, w, h)
+            this.lps.draw(context)
+            cb(context)
+            this.lps.update(() => {
+                endcb()
+            })
+        }
+    }
+}
